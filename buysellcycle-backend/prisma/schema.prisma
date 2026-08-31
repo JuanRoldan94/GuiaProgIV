@@ -1,0 +1,212 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// ================= ENUMS =================
+enum EstadoProducto {
+  DISPONIBLE
+  ACTIVO
+  INACTIVO
+}
+
+enum RolUsuario {
+  Administracion
+  Vendedor
+}
+
+// ================= ENTIDADES =================
+
+model Provincia {
+  id                  Int          @id @default(autoincrement())
+  nombre              String
+  
+  localidades         Localidad[]
+  depositos           Deposito[]
+  sucursales          Sucursal[]
+  clientes            Cliente[]
+
+  archivado           Boolean      @default(false)
+  fecha_creacion      DateTime     @default(now())
+  fecha_actualizacion DateTime     @updatedAt
+}
+
+model Localidad {
+  id                  Int          @id @default(autoincrement())
+  nombre              String
+  
+  provinciaId         Int
+  provincia           Provincia    @relation(fields: [provinciaId], references: [id])
+  
+  depositos           Deposito[]
+  sucursales          Sucursal[]
+  clientes            Cliente[]
+
+  archivado           Boolean      @default(false)
+  fecha_creacion      DateTime     @default(now())
+  fecha_actualizacion DateTime     @updatedAt
+}
+
+model Marca {
+  id                  Int          @id @default(autoincrement())
+  nombre              String
+  
+  productos           Producto[]
+
+  archivado           Boolean      @default(false)
+  fecha_creacion      DateTime     @default(now())
+  fecha_actualizacion DateTime     @updatedAt
+}
+
+model CategoriaNivel1 {
+  id                  Int          @id @default(autoincrement())
+  nombre              String
+  
+  categoriasNivel2    CategoriaNivel2[]
+
+  archivado           Boolean      @default(false)
+  fecha_creacion      DateTime     @default(now())
+  fecha_actualizacion DateTime     @updatedAt
+}
+
+model CategoriaNivel2 {
+  id                  Int          @id @default(autoincrement())
+  nombre              String
+  
+  categoriaNivel1Id   Int
+  categoriaNivel1     CategoriaNivel1 @relation(fields: [categoriaNivel1Id], references: [id])
+  
+  productos           Producto[]
+
+  archivado           Boolean      @default(false)
+  fecha_creacion      DateTime     @default(now())
+  fecha_actualizacion DateTime     @updatedAt
+}
+
+model Producto {
+  id                          Int          @id @default(autoincrement())
+  nombre                      String
+  stockTotal                  Int          @default(0)
+  costoNeto                   Decimal      @db.Decimal(10, 2)
+  utilidadPorcentaje          Decimal      @db.Decimal(5, 2)
+  precioLista                 Decimal      @db.Decimal(10, 2)
+  porcentajeDescuentoContado  Decimal      @db.Decimal(5, 2)
+  precioContado               Decimal      @db.Decimal(10, 2)
+  estado                      EstadoProducto @default(DISPONIBLE)
+  fechaUltimoMovimiento       DateTime?
+  fechaUltimaSincronizacion   DateTime?
+  rutaImagenStorage           String?
+
+  marcaId                     Int
+  marca                       Marca        @relation(fields: [marcaId], references: [id])
+  
+  categoriaNivel2Id           Int
+  categoriaNivel2             CategoriaNivel2 @relation(fields: [categoriaNivel2Id], references: [id])
+  
+  stockEnDepositos            StockProductoDeposito[]
+
+  archivado                   Boolean      @default(false)
+  fecha_creacion              DateTime     @default(now())
+  fecha_actualizacion         DateTime     @updatedAt
+}
+
+model Deposito {
+  id                  Int          @id @default(autoincrement())
+  codigo              String       @unique 
+  nombre              String
+  
+  provinciaId         Int
+  provincia           Provincia    @relation(fields: [provinciaId], references: [id])
+  
+  localidadId         Int
+  localidad           Localidad    @relation(fields: [localidadId], references: [id])
+  
+  stockProductos      StockProductoDeposito[]
+
+  archivado           Boolean      @default(false)
+  fecha_creacion      DateTime     @default(now())
+  fecha_actualizacion DateTime     @updatedAt
+}
+
+model StockProductoDeposito {
+  id                  Int          @id @default(autoincrement())
+  stock               Int          @default(0)
+  
+  productoId          Int
+  producto            Producto     @relation(fields: [productoId], references: [id])
+  
+  depositoId          Int
+  deposito            Deposito     @relation(fields: [depositoId], references: [id])
+
+  archivado           Boolean      @default(false)
+  fecha_creacion      DateTime     @default(now())
+  fecha_actualizacion DateTime     @updatedAt
+
+  @@unique([productoId, depositoId])
+}
+
+model Sucursal {
+  id                  Int          @id @default(autoincrement())
+  nombre              String
+  
+  provinciaId         Int
+  provincia           Provincia    @relation(fields: [provinciaId], references: [id])
+  
+  localidadId         Int
+  localidad           Localidad    @relation(fields: [localidadId], references: [id])
+  
+  usuarios            Usuario[]
+
+  archivado           Boolean      @default(false)
+  fecha_creacion      DateTime     @default(now())
+  fecha_actualizacion DateTime     @updatedAt
+}
+
+model Usuario {
+  id                  Int          @id @default(autoincrement())
+  nombre              String
+  apellido            String
+  dni                 String       @unique
+  nombreUsuario       String       @unique
+  rol                 RolUsuario
+  
+  sucursalId          Int
+  sucursal            Sucursal     @relation(fields: [sucursalId], references: [id])
+
+  archivado           Boolean      @default(false)
+  fecha_creacion      DateTime     @default(now())
+  fecha_actualizacion DateTime     @updatedAt
+}
+
+model Cliente {
+  id                  Int          @id @default(autoincrement())
+  nombre              String
+  apellido            String
+  dni                 String       @unique
+  email               String       @unique
+  
+  provinciaId         Int
+  provincia           Provincia    @relation(fields: [provinciaId], references: [id])
+  
+  localidadId         Int
+  localidad           Localidad    @relation(fields: [localidadId], references: [id])
+
+  archivado           Boolean      @default(false)
+  fecha_creacion      DateTime     @default(now())
+  fecha_actualizacion DateTime     @updatedAt
+}
+
+model Proveedor {
+  id                  Int          @id @default(autoincrement())
+  razonSocial         String
+  cuit                String       @unique
+
+  archivado           Boolean      @default(false)
+  fecha_creacion      DateTime     @default(now())
+  fecha_actualizacion DateTime     @updatedAt
+}
+
