@@ -4,12 +4,16 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto.js';
 
 @Injectable()
 export class UsuariosService {
+
+  private usuariosArray: string[] = [];
+
   create(createUsuarioDto: CreateUsuarioDto) {
-    return 'This action adds a new usuario';
+    this.usuariosArray.push(createUsuarioDto.nombre);
+    return this.usuariosArray;
   }
 
   findAll() {
-    return `This action returns all usuarios`;
+    return this.usuariosArray;
   }
 
   findOne(id: number) {
