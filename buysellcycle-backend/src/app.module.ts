@@ -2,6 +2,17 @@ import { Module } from '@nestjs/common';
 import { createObserveModule } from '@nestjs/observe';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
+import { ProductosModule } from './modulos/catalogo/productos/productos.module.js';
+import { MarcasModule } from './modulos/catalogo/marcas/marcas.module.js';
+import { DepositosModule } from './modulos/inventario/depositos/depositos.module.js';
+import { UsuariosModule } from './modulos/administracion/usuarios/usuarios.module.js';
+import { SucursalesModule } from './modulos/administracion/sucursales/sucursales.module.js';
+import { ClientesModule } from './modulos/ventas/clientes/clientes.module.js';
+import { ProveedoresModule } from './modulos/inventario/proveedores/proveedores.module.js';
+import { ProvinciasModule } from './modulos/ubicaciones/provincias/provincias.module.js';
+import { LocalidadesModule } from './modulos/ubicaciones/localidades/localidades.module.js';
+import { CategoriasModule } from './modulos/catalogo/categorias/categorias.module.js';
+import { StockModule } from './modulos/inventario/stock/stock.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -14,6 +25,17 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       appSecret: 'YOUR_APP_SECRET',
       serviceId: 'buysellcycle-backend',
     }),
+    ProductosModule,
+    MarcasModule,
+    DepositosModule,
+    UsuariosModule,
+    SucursalesModule,
+    ClientesModule,
+    ProveedoresModule,
+    ProvinciasModule,
+    LocalidadesModule,
+    CategoriasModule,
+    StockModule,
   ],
   controllers: [AppController],
   providers: [AppService],
