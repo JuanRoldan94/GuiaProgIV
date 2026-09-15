@@ -9,6 +9,10 @@ export class CreateProductoDto {
     @Min(0)
     costoNeto: number;
 
+    @IsNumber()
+    @Min(0, { message: 'La utlilidad no puede ser negativa'})
+    utilidadPorcentaje: number;
+    
     @IsNumber({ maxDecimalPlaces:2 })
     @Min(0)
     porcentajeDescuentoContado: number;

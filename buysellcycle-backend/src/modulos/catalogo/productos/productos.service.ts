@@ -1,11 +1,33 @@
 import { Injectable } from '@nestjs/common';
-import { CreateProductoDto } from './dto/create-producto.dto.js';
 import { UpdateProductoDto } from './dto/update-producto.dto.js';
+import { PrismaService } from '../../../../prisma/prisma.service.js'
 
 @Injectable()
 export class ProductosService {
-  create(createProductoDto: CreateProductoDto) {
-    return 'This action adds a new producto';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createProductoDto: any) {
+    const {
+      costoNeto,
+      utilidadPorcentaje,
+      porcentajeDescuentoContado,
+      ...restData
+    } = createProductoDto;
+
+    const precioLista = costoNeto * (1 + (utilidadPorcentaje / 100));
+
+    const precioContado = precioLista * (1 - (porcentajeDescuentoContado / 100));
+
+    return await this.prisma.producto.create({
+      data: {
+        ...restData,
+        costoNeto,
+        utilidadPorcentaje,
+        porcentajeDescuentoContado,
+        precioLista,
+        precioContado,
+      },
+    });
   }
 
   findAll() {

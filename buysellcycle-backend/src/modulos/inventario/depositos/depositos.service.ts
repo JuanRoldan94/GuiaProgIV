@@ -1,11 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDepositoDto } from './dto/create-deposito.dto.js';
 import { UpdateDepositoDto } from './dto/update-deposito.dto.js';
+import { PrismaService } from '../../../../prisma/prisma.service.js'
 
 @Injectable()
 export class DepositosService {
-  create(createDepositoDto: CreateDepositoDto) {
-    return 'This action adds a new deposito';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createDepositoDto: any) {
+
+    const ultimoDeposito = await this.prisma.deposito.findFirst({
+      orderBy: {
+        id: 'desc',
+      },
+    });
+
+    let proximoNumero = 1;
+
+    if (ultimoDeposito && ultimoDeposito.codigo.startsWith('DEP-')){
+      const numeroAnterior = parseInt(ultimoDeposito.codigo.split('-')[1], 10);
+
+      if (!isNaN(numeroAnterior)){
+        proximoNumero = numeroAnterior + 1;
+      }
+    }
+
+    const nuevoCodigo = `DEP-${proximoNumero.toString().padStart(2, '0')}`;
+
+    return await this.prisma.deposito.create({
+      data:{
+        ...createDepositoDto,
+        codigo: nuevoCodigo,
+      },
+    });
   }
 
   findAll() {
