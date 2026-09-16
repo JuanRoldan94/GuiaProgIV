@@ -1,13 +1,15 @@
-// import { IsInt, Min, IsPositive } from 'class-validator';
+import { IsInt, IsPositive } from 'class-validator'
 
-// export class MovimientoStockDto {
-//     @IsInt()
-//     productoId: number;
+export class MovimientoStockDto {
+    @IsInt()
+    @IsPositive()
+    productoId: number;
 
-//     @IsInt()
-//     depositoId: number;
+    @IsInt()
+    @IsPositive()
+    depositoId: number;
 
-//     @IsInt()
-//     @IsPositive()
-//     cantidad: number;
-// }
+    @IsInt()
+    @IsPositive({ message: 'La cantidad debe ser mayor a cero' })
+    cantidad: number;
+}
