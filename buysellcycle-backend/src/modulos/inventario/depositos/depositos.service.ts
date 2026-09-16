@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateDepositoDto } from './dto/create-deposito.dto.js';
 import { UpdateDepositoDto } from './dto/update-deposito.dto.js';
 import { PrismaService } from '../../../prisma/prisma.service.js'
+import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class DepositosService {
@@ -34,19 +36,54 @@ export class DepositosService {
     });
   }
 
-  findAll() {
-    return `This action returns all depositos`;
+  async findAll() {
+    return await this.prisma.deposito.findMany({
+      where: {
+        archivado: false,
+      },
+      include:{
+        provincia: true,
+        localidad: true,
+      }
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} deposito`;
+  async findOne(id: number) {
+    const deposito = await this.prisma.deposito.findFirst({
+      where: {
+        id,
+        archivado: false,
+      },
+      include: {
+        provincia: true,
+        localidad: true,
+      }
+    });
+
+    if (!deposito){
+      throw new NotFoundException('Deposito no encontrado');
+    }
+
+    return deposito;
   }
 
-  update(id: number, updateDepositoDto: UpdateDepositoDto) {
-    return `This action updates a #${id} deposito`;
+  async update(id: number, updateDepositoDto: UpdateDepositoDto) {
+    await this.findOne(id);
+
+    return await this.prisma.deposito.update({
+      where: { id },
+      data: updateDepositoDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} deposito`;
+  async remove(id: number) {
+    await this.findOne(id);
+
+    return await this.prisma.deposito.update({
+      where: { id },
+      data: {
+        archivado: true,
+      },
+    });
   }
 }
