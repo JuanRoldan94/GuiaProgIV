@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { PrismaService } from '../../../prisma/prisma.service.js'
 import { CreateMarcaDto } from './dto/create-marca.dto.js';
 import { UpdateMarcaDto } from './dto/update-marca.dto.js';
 
 @Injectable()
 export class MarcasService {
-  create(createMarcaDto: CreateMarcaDto) {
-    return 'This action adds a new marca';
+  constructor(private readonly prisma: PrismaService) {}
+
+  async create(createMarcaDto: CreateMarcaDto) {
+    return await this.prisma.marca.create({
+      data: createMarcaDto,
+    });
   }
 
-  findAll() {
-    return `This action returns all marcas`;
+  async findAll() {
+    return await this.prisma.marca.findMany({
+      where: { archivado: false },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} marca`;
+  async findOne(id: number) {
+    const registro = await this.prisma.marca.findFirst({
+      where: {
+        id,
+        archivado:false
+      },
+    });
+
+    if(!registro){
+      throw new NotFoundException(`Registro con id #${id} no encontrado`);
+    }
+    return registro
   }
 
-  update(id: number, updateMarcaDto: UpdateMarcaDto) {
-    return `This action updates a #${id} marca`;
+  async update(id: number, updateMarcaDto: UpdateMarcaDto) {
+    await this.findOne(id);
+
+    return await this.prisma.marca.update({
+      where: { id },
+      data: updateMarcaDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} marca`;
+  async remove(id: number) {
+    await this.findOne(id);
+
+    return await this.prisma.marca.update({
+      where: { id },
+      data: { archivados: true},
+    })
   }
 }
