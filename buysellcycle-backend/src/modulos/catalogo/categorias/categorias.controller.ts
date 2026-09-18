@@ -1,34 +1,68 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, ParseIntPipe, Delete } from '@nestjs/common';
 import { CategoriasService } from './categorias.service.js';
-import { CreateCategoriaDto } from './dto/create-categoria.dto.js';
+import { CreateCategoriaNivel1Dto } from './dto/create-categoria-nivel1-dto.js';
 import { UpdateCategoriaDto } from './dto/update-categoria.dto.js';
+import { CreateCategoriaNivel2Dto } from './dto/create-categoria-nivel2-dto.js';
+
 
 @Controller('categorias')
 export class CategoriasController {
   constructor(private readonly categoriasService: CategoriasService) {}
 
-  @Post()
-  create(@Body() createCategoriaDto: CreateCategoriaDto) {
-    return this.categoriasService.create(createCategoriaDto);
+  @Get('jerarquia')
+  obtenerJerarquia() {
+    return this.categoriasService.obtenerJerarquia();
   }
 
-  @Get()
-  findAll() {
-    return this.categoriasService.findAll();
+  // RUTAS NIVEL 1
+  @Post('nivel-1')
+  createNivel1(@Body() dto: CreateCategoriaNivel1Dto) {
+    return this.categoriasService.createNivel1(dto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriasService.findOne(+id);
+  @Get('nivel-1')
+  findAllNivel1() {
+    return this.categoriasService.findAllNivel1();
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCategoriaDto: UpdateCategoriaDto) {
-    return this.categoriasService.update(+id, updateCategoriaDto);
+  @Get('nivel-1/:id')
+  findOneNivel1(@Param('id', ParseIntPipe) id: number) {
+    return this.categoriasService.findOneNivel1(id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.categoriasService.remove(+id);
+  @Patch('nivel-1/:id')
+  updateNivel1(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateCategoriaDto) {
+    return this.categoriasService.updateNivel1(id, dto);
+  }
+
+  @Delete('nivel-1/:id')
+  removeNivel1(@Param('id', ParseIntPipe) id: number) {
+    return this.categoriasService.removeNivel1(id);
+  }
+
+  // RUTAS NIVEL 2
+  @Post('nivel-2')
+  createNivel2(@Body() dto: CreateCategoriaNivel2Dto) {
+    return this.categoriasService.createNivel2(dto);
+  }
+
+  @Get('nivel-2')
+  findAllNivel2() {
+    return this.categoriasService.findAllNivel2();
+  }
+
+  @Get('nivel-2/:id')
+  findOneNivel2(@Param('id', ParseIntPipe) id: number) {
+    return this.categoriasService.findOneNivel2(id);
+  }
+
+  @Patch('nivel-2/:id')
+  updateNivel2(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateCategoriaDto) {
+    return this.categoriasService.updateNivel2(id, dto);
+  }
+
+  @Delete('nivel-2/:id')
+  removeNivel2(@Param('id', ParseIntPipe) id: number) {
+    return this.categoriasService.removeNivel2(id);
   }
 }
