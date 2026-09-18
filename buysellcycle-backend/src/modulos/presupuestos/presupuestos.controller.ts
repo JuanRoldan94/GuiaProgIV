@@ -1,0 +1,14 @@
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { PresupuestosService } from './presupuestos.service.js';
+import { CreatePresupuestoDto } from './dto/create-presupuesto.dto.js';
+import { UpdatePresupuestoDto } from './dto/update-presupuesto.dto.js';
+
+@Controller('presupuestos')
+export class PresupuestosController {
+  constructor(private readonly presupuestosService: PresupuestosService) {}
+
+  @Post('emitir')
+  create(@Body() createPresupuestoDto: CreatePresupuestoDto) {
+    return this.presupuestosService.create(createPresupuestoDto);
+  }
+}

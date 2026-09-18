@@ -9,6 +9,10 @@ export class CreateClienteDto {
     @IsNotEmpty()
     apellido: string;
 
+    @IsString()
+    @IsNotEmpty()
+    dni: string;
+
     @IsEmail({}, { message: 'El formato del mail no es valido'})
     email: string;
 

@@ -14,6 +14,7 @@ import { ProvinciasModule } from './modulos/ubicaciones/provincias/provincias.mo
 import { LocalidadesModule } from './modulos/ubicaciones/localidades/localidades.module.js';
 import { CategoriasModule } from './modulos/catalogo/categorias/categorias.module.js';
 import { StockModule } from './modulos/inventario/stock/stock.module.js';
+import { PresupuestosModule } from './modulos/presupuestos/presupuestos.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -38,6 +39,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     LocalidadesModule,
     CategoriasModule,
     StockModule,
+    PresupuestosModule,
   ],
   controllers: [AppController],
   providers: [AppService],
