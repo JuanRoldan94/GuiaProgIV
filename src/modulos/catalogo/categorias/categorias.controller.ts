@@ -1,8 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, ParseIntPipe, Delete } from '@nestjs/common';
 import { CategoriasService } from './categorias.service.js';
 import { CreateCategoriaNivel1Dto } from './dto/create-categoria-nivel1-dto.js';
-import { UpdateCategoriaDto } from './dto/update-categoria.dto.js';
+import { UpdateCategoriaNivel1Dto } from './dto/update-categoria-nivel1-dto.js';
 import { CreateCategoriaNivel2Dto } from './dto/create-categoria-nivel2-dto.js';
+import { UpdateCategoriaNivel2Dto } from './dto/update-categoria-nivel2-dto.js';
 
 
 @Controller('categorias')
@@ -31,7 +32,10 @@ export class CategoriasController {
   }
 
   @Patch('nivel-1/:id')
-  updateNivel1(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateCategoriaDto) {
+  updateNivel1(
+    @Param('id', ParseIntPipe) id: number, 
+    @Body() dto: UpdateCategoriaNivel1Dto
+  ){
     return this.categoriasService.updateNivel1(id, dto);
   }
 
@@ -57,7 +61,10 @@ export class CategoriasController {
   }
 
   @Patch('nivel-2/:id')
-  updateNivel2(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateCategoriaDto) {
+  updateNivel2(
+    @Param('id', ParseIntPipe) id: number, 
+    @Body() dto: UpdateCategoriaNivel2Dto
+  ){
     return this.categoriasService.updateNivel2(id, dto);
   }
 
