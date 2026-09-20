@@ -17,7 +17,7 @@ export class SucursalesService {
     return await this.prisma.sucursal.findMany({
       where: { archivado: false },
       include: {
-        provioncia: true,
+        provincia: true,
         localidad: true,
       },
     });

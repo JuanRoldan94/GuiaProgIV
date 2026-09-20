@@ -22,7 +22,7 @@ export class MarcasService {
   async findOne(id: number) {
     const registro = await this.prisma.marca.findFirst({
       where: {
-        id,
+        id: id,
         archivado:false
       },
     });
@@ -47,7 +47,7 @@ export class MarcasService {
 
     return await this.prisma.marca.update({
       where: { id },
-      data: { archivados: true},
+      data: { archivado: true},
     })
   }
 }

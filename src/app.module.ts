@@ -15,6 +15,7 @@ import { LocalidadesModule } from './modulos/ubicaciones/localidades/localidades
 import { CategoriasModule } from './modulos/catalogo/categorias/categorias.module.js';
 import { StockModule } from './modulos/inventario/stock/stock.module.js';
 import { PresupuestosModule } from './modulos/presupuestos/presupuestos.module.js';
+import { UbicacionesController } from './modulos/administracion/ubicaciones.controller.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -41,7 +42,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     StockModule,
     PresupuestosModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, UbicacionesController],
   providers: [AppService],
 })
 export class AppModule {}
