@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../../prisma/prisma.service.js';
 import { CreateClienteDto } from './dto/create-cliente.dto.js';
 import { UpdateClienteDto } from './dto/update-cliente.dto.js';
@@ -8,6 +8,22 @@ export class ClientesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createClienteDto: CreateClienteDto) {
+    const clienteExistenteDni = await this.prisma.cliente.findUnique({
+      where: { dni: createClienteDto.dni},
+    });
+
+    if (clienteExistenteDni) {
+      throw new BadRequestException(`Ya existe un cliente con el DNI/Cuit ${createClienteDto.dni}`);
+    }
+
+    const clienteExistenteEmail = await this.prisma.cliente.findUnique({
+      where: { email: createClienteDto.email },
+    });
+
+    if (clienteExistenteEmail) {
+      throw new BadRequestException(`El email ${createClienteDto.email} esta asignado a otro cliente`);
+    }
+
     return await this.prisma.cliente.create({
       data: createClienteDto,
     });
