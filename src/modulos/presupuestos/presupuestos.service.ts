@@ -12,7 +12,7 @@ export class PresupuestosService {
     const { clienteId, items } = dto;
 
     const cliente = await this.prisma.cliente.findFirst({
-      where: { id: clienteId, achivado: false },
+      where: { id: clienteId, archivado: false },
     });
 
     if(!cliente){

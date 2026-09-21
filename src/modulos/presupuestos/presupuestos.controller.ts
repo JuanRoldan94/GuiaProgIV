@@ -7,7 +7,7 @@ import { UpdatePresupuestoDto } from './dto/update-presupuesto.dto.js';
 export class PresupuestosController {
   constructor(private readonly presupuestosService: PresupuestosService) {}
 
-  @Post('emitir')
+  @Post()
   create(@Body() createPresupuestoDto: CreatePresupuestoDto) {
     return this.presupuestosService.create(createPresupuestoDto);
   }
