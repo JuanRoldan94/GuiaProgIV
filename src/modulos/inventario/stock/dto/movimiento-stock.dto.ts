@@ -1,4 +1,4 @@
-import { IsInt, IsPositive } from 'class-validator'
+import { IsInt, IsPositive, IsString, IsOptional } from 'class-validator'
 
 export class MovimientoStockDto {
     @IsInt()
@@ -12,4 +12,8 @@ export class MovimientoStockDto {
     @IsInt()
     @IsPositive({ message: 'La cantidad debe ser mayor a cero' })
     cantidad: number;
+
+    @IsString()
+    @IsOptional()
+    motivo?: string;
 }

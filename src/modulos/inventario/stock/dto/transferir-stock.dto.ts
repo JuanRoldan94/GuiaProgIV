@@ -1,4 +1,4 @@
-import { IsInt, Min, IsPositive, NotEquals } from 'class-validator';
+import { IsInt, Min, IsPositive, IsString, IsOptional } from 'class-validator';
 
 export class TransferirStockDto {
     @IsInt()
@@ -16,4 +16,8 @@ export class TransferirStockDto {
     @IsInt()
     @Min(1, { message: 'Se debe transferir almenos una unidad'})
     cantidad: number;
+
+    @IsString()
+    @IsOptional()
+    motivo: string;
 }

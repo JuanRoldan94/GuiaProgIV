@@ -75,7 +75,7 @@ export class StockService {
             await tx.producto.update({
                 where: { id: productoId },
                 data: {
-                    stocklTotal: stockTotalAcumulado,
+                    stockTotal: stockTotalAcumulado,
                     fechaUltimoMovimiento: new Date(),
                     fechaUltimaSincronizacion: new Date(),
                 },
