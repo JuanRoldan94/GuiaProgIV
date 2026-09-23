@@ -6,37 +6,51 @@ import { Decimal } from 'decimal.js';
 
 @Injectable()
 export class ProductosService {
-  constructor(private readonly prisma: PrismaService) {}
+    constructor(private readonly prisma: PrismaService) {}
 
-  async create(createProductoDto: any) {
-    const {
-      costoNeto,
-      utilidadPorcentaje,
-      porcentajeDescuentoContado,
-      ...restData
-    } = createProductoDto;
+    async create(createProductoDto: any) {
+      const {
+        costoNeto,
+        utilidadPorcentaje,
+        porcentajeDescuentoContado,
+        depositoId,
+        stockInicial,
+        ...restData
+      } = createProductoDto;
 
-    const costo = new Decimal(costoNeto);
-    const utilidad = new Decimal(utilidadPorcentaje);
-    const descuento = new Decimal(porcentajeDescuentoContado);
+      const costo = new Decimal(costoNeto);
+      const utilidad = new Decimal(utilidadPorcentaje);
+      const descuento = new Decimal(porcentajeDescuentoContado);
 
-    const multiplicadorUtilidad = utilidad.dividedBy(100).plus(1);
-    const precioLista = costo.times(multiplicadorUtilidad);
+      const multiplicadorUtilidad = utilidad.dividedBy(100).plus(1);
+      const precioLista = costo.times(multiplicadorUtilidad);
 
-    const multiplicadorDescuento = new Decimal(1).minus(descuento.dividedBy(100));
-    const precioContado = precioLista.times(multiplicadorDescuento);
+      const multiplicadorDescuento = new Decimal(1).minus(descuento.dividedBy(100));
+      const precioContado = precioLista.times(multiplicadorDescuento);
 
-    return await this.prisma.producto.create({
-      data: {
+      const dataToCreate: any = {
         ...restData,
         costoNeto: costo.toDecimalPlaces(2).toNumber(),
         utilidadPorcentaje: utilidad.toDecimalPlaces(2).toNumber(),
         porcentajeDescuentoContado: descuento.toDecimalPlaces(2).toNumber(),
         precioLista: precioLista.toDecimalPlaces(2).toNumber(),
         precioContado: precioContado.toDecimalPlaces(2).toNumber(),
-      },
-    });
-  }
+      };
+
+      if (depositoId && stockInicial && stockInicial > 0) {
+        dataToCreate.stockTotal = stockInicial;
+        dataToCreate.stockEnDepositos = {
+          create: {
+            depositoId: depositoId,
+            stock: stockInicial,
+          },
+        };
+      }
+
+      return await this.prisma.producto.create({
+        data: dataToCreate,
+      });
+    }
 
   async findAll() {
     return await this.prisma.producto.findMany({

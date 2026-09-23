@@ -28,4 +28,13 @@ export class CreateProductoDto {
     @IsInt()
     @Min(1)
     categoriaNivel2Id: number;
+
+    @IsOptional()
+    @IsInt()
+    depositoId?: number;
+
+    @IsOptional()
+    @IsInt()
+    @Min(1)
+    stockInicial?: number;
 }
