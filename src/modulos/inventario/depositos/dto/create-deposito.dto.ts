@@ -1,8 +1,8 @@
-import { IsString, IsNotEmpty, IsInt, Min, Matches } from 'class-validator'
+import { IsString, IsNotEmpty, IsInt, Min, Matches, IsOptional } from 'class-validator'
 
 export class CreateDepositoDto {
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     @Matches(/^DEP-\d+/, {
         message: 'El codigo debe seguir el patrón "DEP-XX" (Ej.: DEP-1)'
     })
