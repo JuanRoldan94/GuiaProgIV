@@ -1,10 +1,13 @@
 import { PrismaClient } from '@prisma/client'
 
-console.log("El problema no esta acá"); 
-
 const prisma = new PrismaClient();
 
 async function main() {
+    const cantidadProvincias = await prisma.provincia.count();
+
+    if ( cantidadProvincias > 0 ) {
+        return;
+    } 
 
     const responseProvincias = await fetch('https://apis.datos.gob.ar/georef/api/provincias?max=24');
     const dataProvincias = await responseProvincias.json();

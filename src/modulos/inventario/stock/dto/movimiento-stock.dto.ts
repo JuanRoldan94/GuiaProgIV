@@ -16,4 +16,8 @@ export class MovimientoStockDto {
     @IsString()
     @IsOptional()
     motivo?: string;
+
+    @IsInt()
+    @IsOptional()
+    proveedorId?: number;
 }
